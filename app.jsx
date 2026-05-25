@@ -68,19 +68,53 @@ const SLIDES = [
 ];
 
 // ============================================================
+// Admin login modal
+// ============================================================
+function AdminModal({ onClose, onSuccess }) {
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr]           = useState(null);
+  const [busy, setBusy]         = useState(false);
+
+  const login = async () => {
+    setBusy(true); setErr(null);
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) { setErr("Barua pepe au nywila si sahihi."); return; }
+    onSuccess();
+  };
+
+  const onKey = (e) => { if (e.key === "Enter") login(); };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-logo">
+          <img src="assets/kitotech-horizontal.png" alt="Kitotech" style={{ height: 28 }} />
+        </div>
+        <h3 className="modal-title">Ingia kama Admin</h3>
+        <div className="modal-fields">
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={onKey} placeholder="Barua pepe" autoFocus />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={onKey} placeholder="Nywila" />
+        </div>
+        {err && <div className="modal-err">{err}</div>}
+        <button className="modal-btn" onClick={login} disabled={busy}>
+          {busy ? "Inaingia..." : "Ingia"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // Topbar
 // ============================================================
-function TopBar() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const pad = (n) => String(n).padStart(2, "0");
-  const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+function TopBar({ onDotsClick, adminReady }) {
   return (
     <header className="topbar">
+      <div className="topbar-spacer" />
       <div className="brand-cluster">
         <img className="logo-kt" src="assets/kitotech-horizontal.png" alt="Kitotech Group Ltd" />
         <div className="x" />
@@ -90,9 +124,10 @@ function TopBar() {
           <div className="row2">Wakala Mkuu wa Hikvision Tanzania</div>
         </div>
       </div>
-      <div className="topbar-right">
-        <div className="live-chip"><span className="dot" />Usajili Wazi</div>
-        <div className="ts-chip">{date} · {time}</div>
+      <div className="topbar-end">
+        <button className="dots-btn" onClick={onDotsClick} title="Admin">
+          {adminReady ? <span className="admin-tag">Admin</span> : "···"}
+        </button>
       </div>
     </header>
   );
@@ -367,6 +402,8 @@ function App() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [visualCityId, setVisualCityId] = useState(CITIES[0].id);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminReady, setAdminReady]         = useState(false);
 
   useEffect(() => {
     try {
@@ -440,9 +477,18 @@ function App() {
     if (!form.city) setField("city", id);
   };
 
+  const handleAdminSuccess = () => {
+    setShowAdminModal(false);
+    setAdminReady(true);
+    setTimeout(() => { window.location.href = "Admin.html"; }, 600);
+  };
+
   return (
     <div className="stage" data-screen-label="Registration">
-      <TopBar />
+      {showAdminModal && (
+        <AdminModal onClose={() => setShowAdminModal(false)} onSuccess={handleAdminSuccess} />
+      )}
+      <TopBar onDotsClick={() => setShowAdminModal(true)} adminReady={adminReady} />
       <div className="main">
         <div className="shell-card">
           <VisualPanel
