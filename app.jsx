@@ -408,15 +408,14 @@ function App() {
         const saved = JSON.parse(raw);
         if (saved.form) setForm({ ...initial, ...saved.form });
         if (saved.submitted) setSubmitted(true);
-        if (saved.visualCityId) setVisualCityId(saved.visualCityId);
       }
     } catch (e) {}
   }, []);
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, submitted, visualCityId }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, submitted }));
     } catch (e) {}
-  }, [form, submitted, visualCityId]);
+  }, [form, submitted]);
 
   useEffect(() => {
     if (form.city && form.city !== visualCityId) setVisualCityId(form.city);
