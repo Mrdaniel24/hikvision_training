@@ -551,9 +551,7 @@ a { color: inherit; }
   padding: 4px 10px; border-radius: 999px;
   font: var(--mono-sm); letter-spacing: 0.14em; text-transform: uppercase;
 }
-.sched-row .pill.training { color: var(--brand-red); background: var(--brand-red-tint); flex-direction: column; align-items: center; gap: 2px; }
-.pill-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.pill-time { font: 500 10px/1 var(--font-mono); opacity: 0.8; letter-spacing: 0.03em; }
+.sched-row .pill.training { color: var(--brand-red); background: var(--brand-red-tint); }
 .sched-row .pill.training::before { content: ""; width: 5px; height: 5px; background: var(--brand-red); border-radius: 50%; }
 .sched-row .pill.travel-p { color: var(--fg-on-light-3); background: var(--paper-2); }
 .sched-row .pill.travel-p::before { content: ""; width: 5px; height: 5px; border: 1px solid var(--fg-on-light-3); border-radius: 50%; }

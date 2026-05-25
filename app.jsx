@@ -353,9 +353,7 @@ function SuccessPanel({ form, city, onReset }) {
               </div>
               <div className="act">{r.activity}</div>
               <div className={`pill ${r.type === "training" ? "training" : "travel-p"}`}>
-                {r.type === "training" ? (
-                  <span className="pill-inner">Mafunzo<span className="pill-time">09:00 — 17:00</span></span>
-                ) : "Safari"}
+                {r.type === "training" ? "Mafunzo" : "Safari"}
               </div>
             </div>
           ))}
