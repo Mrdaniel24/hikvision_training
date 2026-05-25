@@ -152,7 +152,7 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
     const id = setInterval(() => {
       const i = CITIES.findIndex((c) => c.id === city.id);
       setCity(CITIES[(i + 1) % CITIES.length].id);
-    }, 5000);
+    }, 4000);
     return () => clearInterval(id);
   }, [city.id, autoPlay, index, setCity]);
 
