@@ -177,15 +177,12 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
           );
         }
         return (
-          <image-slot
-            key={`slot-${city.id}`}
-            id={`hero-${city.id}`}
+          <img
+            key={`img-${city.id}`}
+            className="bg-image"
             src={slide.src}
-            placeholder={`Weka picha ya ${city.name} hapa  ·  Buruta picha`}
-            shape="rect"
-            fit="cover"
-            position="50% 50%"
-          ></image-slot>
+            alt=""
+          />
         );
       })()}
 
