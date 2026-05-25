@@ -389,10 +389,7 @@ function SuccessPanel({ form, city, onReset }) {
 // App
 // ============================================================
 function App() {
-  const STORAGE_KEY = "kitotech-hikvision-reg-v4";
-  const initial = {
-    fullName: "", phone: "", city: ""
-  };
+  const initial = { fullName: "", phone: "", city: "" };
   const [form, setForm] = useState(initial);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -400,26 +397,6 @@ function App() {
   const [visualCityId, setVisualCityId] = useState(CITIES[0].id);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminReady, setAdminReady]         = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        if (saved.form) setForm({ ...initial, ...saved.form });
-        if (saved.submitted) setSubmitted(true);
-      }
-    } catch (e) {}
-  }, []);
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, submitted }));
-    } catch (e) {}
-  }, [form, submitted]);
-
-  useEffect(() => {
-    if (form.city && form.city !== visualCityId) setVisualCityId(form.city);
-  }, [form.city]);
 
   const setField = (k, v) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -464,7 +441,6 @@ function App() {
     setErrors({});
     setSubmitted(false);
     setVisualCityId(CITIES[0].id);
-    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
   };
 
   const visualCity = CITIES.find((c) => c.id === visualCityId) || CITIES[0];
