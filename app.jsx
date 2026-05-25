@@ -350,7 +350,6 @@ function SuccessPanel({ form, city, onReset }) {
               <div>
                 <div className="dt">{(() => { const [,, d] = r.date.split("-"); return `Juni ${parseInt(d)}`; })()}</div>
                 <div className="day">{r.day}</div>
-                {r.type === "training" && <div className="time-range">09:00 — 17:00</div>}
               </div>
               <div className="act">{r.activity}</div>
               <div className={`pill ${r.type === "training" ? "training" : "travel-p"}`}>
