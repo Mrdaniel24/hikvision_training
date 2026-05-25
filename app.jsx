@@ -449,7 +449,11 @@ function App() {
     });
     setSubmitting(false);
     if (error) {
-      alert("Hitilafu ya mtandao: " + error.message);
+      if (error.code === "23505") {
+        setErrors({ phone: "Nambari hii ya simu imeshasajiliwa. Kama una tatizo wasiliana nasi." });
+      } else {
+        setErrors({ phone: "Hitilafu ya mtandao. Jaribu tena." });
+      }
       return;
     }
     setSubmitted(true);
