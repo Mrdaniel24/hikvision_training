@@ -146,15 +146,15 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
     setCity(CITIES[(i - 1 + CITIES.length) % CITIES.length].id);
   };
 
-  // Auto-advance every 4s so the narrative across slides moves automatically.
+  // Auto-advance every 5s — only for image slides (not the video slide).
   useEffect(() => {
-    if (!autoPlay) return;
+    if (!autoPlay || index === 0) return;
     const id = setInterval(() => {
       const i = CITIES.findIndex((c) => c.id === city.id);
       setCity(CITIES[(i + 1) % CITIES.length].id);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(id);
-  }, [city.id, autoPlay, setCity]);
+  }, [city.id, autoPlay, index, setCity]);
 
   // Use a custom React wrapper that creates the image-slot for each city,
   // keeping only the active one mounted (so its image shows + persistence works).
@@ -171,8 +171,8 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
               src={slide.src}
               autoPlay
               muted
-              loop
               playsInline
+              onEnded={next}
             />
           );
         }
