@@ -348,7 +348,7 @@ function SuccessPanel({ form, city, onReset }) {
           {rows.map((r) => (
             <div key={r.date} className={`sched-row ${r.type === "travel" ? "travel" : ""}`}>
               <div>
-                <div className="dt">{r.date.slice(5).replace("-", " · ")}</div>
+                <div className="dt">{(() => { const [,, d] = r.date.split("-"); return `Juni ${parseInt(d)}`; })()}</div>
                 <div className="day">{r.day}</div>
               </div>
               <div className="act">{r.activity}</div>
