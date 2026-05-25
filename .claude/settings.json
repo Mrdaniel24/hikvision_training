@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process \"c:\\\\project\\\\hikvison training\\\\uisocial-login.html\")",
+      "Bash(claude mcp *)"
+    ]
+  }
+}

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UISOCIAL – Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #e3e3e3;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    /* ── OUTER PAGE CARD (right white panel is the card itself) ── */
+    .card {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      max-width: 1020px;
+      min-height: 620px;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      position: relative;
+    }
+
+    /* ══════════════════════════════
+       LEFT DARK PANEL  (floating card inside the white card)
+    ══════════════════════════════ */
+    .dark-panel {
+      position: relative;
+      width: 40%;
+      flex-shrink: 0;
+      border-radius: 18px;           /* all-4-corners rounded */
+      margin: 10px;                  /* floats inside the white card */
+      overflow: hidden;
+      background: #0D0D1A;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+      z-index: 2;
+    }
+
+    /* video/landscape fills the dark panel */
+    .bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    /* dark overlay so text stays readable */
+    .dark-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 4, 18, 0.38);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── left nav ── */
+    .dp-nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 18px;
+      z-index: 20;
+    }
+    .dp-nav .label {
+      font-family: 'Archivo', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+    .dp-nav .actions { display: flex; align-items: center; gap: 12px; }
+    .dp-nav .lnk {
+      font-size: 12px;
+      color: rgba(255,255,255,0.78);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .dp-nav .lnk:hover { color: #fff; }
+    .dp-nav .pill {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(10,10,24,0.68);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      padding: 6px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background .2s, border-color .2s;
+    }
+    .dp-nav .pill:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ── author bar ── */
+    .dp-foot {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 18px 20px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 65%, transparent 100%);
+    }
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.26);
+    }
+    .author-name {
+      font-family: 'Archivo', sans-serif;
+      font-size: 12.5px; font-weight: 700; color: #fff; line-height: 1.3;
+    }
+    .author-role { font-size: 11px; color: rgba(255,255,255,0.52); margin-top: 2px; }
+    .arrows { display: flex; gap: 7px; margin-left: auto; }
+    .arr {
+      width: 29px; height: 29px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      transition: background .2s;
+      backdrop-filter: blur(4px);
+    }
+    .arr:hover { background: rgba(255,255,255,0.24); }
+    .arr svg { width: 13px; height: 13px; }
+
+    /* ══════════════════════════════
+       RIGHT FORM PANEL
+    ══════════════════════════════ */
+    .form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 48px 28px 44px;
+      background: #fff;
+      border-radius: 0 24px 24px 0;   /* right corners match card */
+    }
+
+    /* top bar */
+    .rp-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: 'Archivo', sans-serif;
+      font-size: 16.5px; font-weight: 900; color: #111;
+      letter-spacing: 0.07em;
+    }
+    .lang {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 500; color: #333;
+      padding: 5px 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 100px;
+      background: #fff;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: border-color .2s;
+    }
+    .lang:hover { border-color: #bbb; }
+    .lang svg { width: 11px; height: 11px; color: #888; }
+
+    /* form content, vertically centered */
+    .form-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 350px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .form-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 42px; font-weight: 900; color: #111;
+      line-height: 1.06; letter-spacing: -0.02em;
+      margin-bottom: 7px;
+    }
+    .form-sub {
+      font-size: 13.5px; color: #999; font-weight: 400;
+      margin-bottom: 28px;
+    }
+
+    /* inputs */
+    .inp-wrap { margin-bottom: 11px; }
+    .inp {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1.5px solid #ececec;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #222; background: #fff;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .inp::placeholder { color: #c2c2c2; }
+    .inp:focus {
+      border-color: #E84040;
+      box-shadow: 0 0 0 3px rgba(232,64,64,0.09);
+    }
+
+    .forgot-row {
+      display: flex; justify-content: flex-end;
+      margin: 5px 0 18px;
+    }
+    .forgot {
+      font-size: 12px; color: #E84040; font-weight: 500;
+      text-decoration: none; cursor: pointer;
+    }
+    .forgot:hover { text-decoration: underline; }
+
+    /* divider */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 13px;
+    }
+    .div-line { flex: 1; height: 1px; background: #ececec; }
+    .div-or { font-size: 12px; color: #ccc; font-weight: 500; }
+
+    /* Google btn */
+    .g-btn {
+      width: 100%; padding: 11px 16px;
+      border: 1.5px solid #ececec; border-radius: 10px;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 13.5px; font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500; color: #333;
+      cursor: pointer; margin-bottom: 12px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .g-btn:hover { border-color: #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+
+    /* Login btn */
+    .login-btn {
+      width: 100%; padding: 13px;
+      background: #E84040; border: none; border-radius: 100px;
+      color: #fff; font-size: 14.5px; font-weight: 700;
+      font-family: 'Archivo', sans-serif;
+      cursor: pointer; margin-bottom: 14px;
+      letter-spacing: 0.04em;
+      transition: background .2s, transform .15s;
+    }
+    .login-btn:hover { background: #d13636; }
+    .login-btn:active { transform: scale(0.98); }
+
+    /* signup */
+    .signup-txt {
+      text-align: center; font-size: 12.5px; color: #999;
+    }
+    .signup-lnk {
+      color: #E84040; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+    }
+    .signup-lnk:hover { text-decoration: underline; }
+
+    /* social row */
+    .socials {
+      display: flex; justify-content: center; gap: 16px;
+      padding-top: 24px; border-top: 1px solid #f0f0f0;
+      margin-top: 26px;
+    }
+    .soc {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #e8e8e8;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #666; text-decoration: none;
+      transition: border-color .2s, box-shadow .2s, color .2s;
+    }
+    .soc:hover { border-color: #bbb; box-shadow: 0 2px 10px rgba(0,0,0,0.09); color: #222; }
+    .soc svg { width: 16px; height: 16px; }
+
+    /* ── responsive ── */
+    @media (max-width: 720px) {
+      .dark-panel { display: none; }
+      .form-panel { border-radius: 24px; padding: 32px 24px; }
+      .form-title { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- ═══ LEFT DARK PANEL ═══ -->
+  <div class="dark-panel">
+
+    <!-- Background video -->
+    <video class="bg-video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="video/hailuo-2_3_Create_a_hyper-realistic_cinematic_3D_animation_of_a_professional_Hikvision-styl-0.mp4" type="video/mp4"/>
+    </video>
+
+    <!-- KEEP SVG as fallback (hidden when video loads) -->
+    <svg style="display:none" viewBox="0 0 420 600"
+         preserveAspectRatio="xMidYMid slice"
+         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <!-- Sky -->
+        <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#010010"/>
+          <stop offset="22%"  stop-color="#05072a"/>
+          <stop offset="50%"  stop-color="#0c061c"/>
+          <stop offset="78%"  stop-color="#160709"/>
+          <stop offset="100%" stop-color="#090205"/>
+        </linearGradient>
+        <!-- Canyon rock left -->
+        <linearGradient id="gRkL" x1="0" y1="0.1" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#3e1500"/>
+          <stop offset="28%"  stop-color="#7a3210"/>
+          <stop offset="55%"  stop-color="#6b2808"/>
+          <stop offset="85%"  stop-color="#381200" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#200800" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Canyon rock right -->
+        <linearGradient id="gRkR" x1="1" y1="0.1" x2="0" y2="0">
+          <stop offset="0%"   stop-color="#3e1500"/>
+          <stop offset="28%"  stop-color="#7a3210"/>
+          <stop offset="55%"  stop-color="#6b2808"/>
+          <stop offset="85%"  stop-color="#381200" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#200800" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Far mountains -->
+        <linearGradient id="gMt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#180e3c"/>
+          <stop offset="55%"  stop-color="#0c0720"/>
+          <stop offset="100%" stop-color="#040110"/>
+        </linearGradient>
+        <!-- Horizon warm glow -->
+        <radialGradient id="gHoriz" cx="50%" cy="72%" r="52%">
+          <stop offset="0%"   stop-color="#c84000" stop-opacity="0.3"/>
+          <stop offset="70%"  stop-color="#8b2000" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="#c84000" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Moon glow -->
+        <radialGradient id="gMoon" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#c2dcf8" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#c2dcf8" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Soft glow filter -->
+        <filter id="fGlow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="4"/>
+        </filter>
+        <filter id="fStar" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="0.5"/>
+        </filter>
+      </defs>
+
+      <!-- Sky base -->
+      <rect width="420" height="600" fill="url(#gSky)"/>
+
+      <!-- Stars -->
+      <g fill="#fff" filter="url(#fStar)">
+        <circle cx="52"  cy="25"  r="0.9" opacity="0.80"/>
+        <circle cx="108" cy="12"  r="1.1" opacity="0.90"/>
+        <circle cx="175" cy="38"  r="0.7" opacity="0.65"/>
+        <circle cx="242" cy="16"  r="1.0" opacity="0.85"/>
+        <circle cx="298" cy="48"  r="0.8" opacity="0.70"/>
+        <circle cx="348" cy="26"  r="1.0" opacity="0.60"/>
+        <circle cx="395" cy="60"  r="0.7" opacity="0.75"/>
+        <circle cx="76"  cy="72"  r="0.9" opacity="0.55"/>
+        <circle cx="145" cy="92"  r="0.8" opacity="0.70"/>
+        <circle cx="214" cy="52"  r="0.7" opacity="0.60"/>
+        <circle cx="312" cy="82"  r="0.9" opacity="0.85"/>
+        <circle cx="410" cy="104" r="0.7" opacity="0.50"/>
+        <circle cx="36"  cy="130" r="0.7" opacity="0.65"/>
+        <circle cx="165" cy="120" r="0.9" opacity="0.60"/>
+        <circle cx="272" cy="135" r="1.0" opacity="0.75"/>
+        <circle cx="368" cy="145" r="0.7" opacity="0.50"/>
+        <circle cx="90"  cy="163" r="0.6" opacity="0.55"/>
+        <circle cx="332" cy="170" r="0.8" opacity="0.45"/>
+        <circle cx="194" cy="180" r="0.7" opacity="0.50"/>
+      </g>
+
+      <!-- Moon/planet upper-right -->
+      <circle cx="298" cy="112" r="52" fill="url(#gMoon)" filter="url(#fGlow)"/>
+      <circle cx="298" cy="108" r="26" fill="#b6d0ee" opacity="0.80"/>
+      <circle cx="291" cy="101" r="5.5" fill="#98bcde" opacity="0.52"/>
+      <circle cx="306" cy="116" r="7.0" fill="#8aacd6" opacity="0.44"/>
+      <circle cx="300" cy="100" r="3.5" fill="#c6def6" opacity="0.40"/>
+
+      <!-- Small ringed planet top-left -->
+      <circle cx="162" cy="88"  r="14" fill="#271a50" opacity="0.88"/>
+      <ellipse cx="162" cy="90" rx="24" ry="5.5"
+               fill="none" stroke="#564880" stroke-width="4.5" opacity="0.42"/>
+
+      <!-- Horizon warm glow -->
+      <ellipse cx="210" cy="430" rx="290" ry="145" fill="url(#gHoriz)"/>
+
+      <!-- ── LEFT canyon wall ── -->
+      <path d="
+        M  0,  0
+        L  0,600
+        L105,600
+        L118,555
+        L 84,488
+        L115,420
+        L 80,348
+        L114,272
+        L 78,192
+        L108,108
+        L 66, 34
+        L 92,  0
+        Z"
+        fill="url(#gRkL)" opacity="0.97"/>
+
+      <!-- Left rock face cracks / texture -->
+      <g stroke="#a05020" stroke-width="1" opacity="0.18" fill="none">
+        <path d="M 0, 90 L 70,108"/>
+        <path d="M 0,192 L 82,222"/>
+        <path d="M 0,308 L 94,338"/>
+        <path d="M 0,428 L104,452"/>
+        <path d="M 0,525 L112,542"/>
+      </g>
+
+      <!-- Left rim-light (horizon fire glow) -->
+      <path d="M 84,488 L115,420 L 80,348 L114,272 L 78,192 L108,108"
+            stroke="#d05512" stroke-width="2.5" opacity="0.40"
+            fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- ── RIGHT canyon wall ── -->
+      <path d="
+        M420,  0
+        L335,  0
+        L354, 76
+        L316,154
+        L354,234
+        L318,312
+        L356,390
+        L322,466
+        L358,540
+        L342,600
+        L420,600
+        Z"
+        fill="url(#gRkR)" opacity="0.92"/>
+
+      <!-- Right rim-light -->
+      <path d="M322,466 L356,390 L318,312 L354,234 L316,154 L354,76"
+            stroke="#d05512" stroke-width="2.5" opacity="0.34"
+            fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- ── Far mountains ── -->
+      <path d="
+        M  0,490 L 52,390 L 96,430 L146,350 L190,396
+        L234,326 L278,372 L324,302 L368,356 L420,340
+        L420,600 L0,600 Z"
+        fill="url(#gMt)" opacity="0.93"/>
+
+      <!-- ── Mid mountains (darker) ── -->
+      <path d="
+        M  0,528 L 62,435 L110,474 L164,410 L214,448
+        L262,398 L308,438 L352,400 L396,428 L420,416
+        L420,600 L0,600 Z"
+        fill="#060210" opacity="0.97"/>
+
+      <!-- ── Foreground ground ── -->
+      <path d="
+        M  0,570 L 26,545 L 72,558 L134,528 L192,552
+        L252,518 L314,540 L376,520 L420,538
+        L420,600 L0,600 Z"
+        fill="#020108"/>
+
+      <!-- Warm horizon streak -->
+      <rect x="55" y="402" width="310" height="1.8" rx="1"
+            fill="#e07030" opacity="0.14"/>
+
+      <!-- Bottom fog / atmospheric haze -->
+      <rect x="0" y="460" width="420" height="140"
+            fill="url(#gSky)" opacity="0.22"/>
+    </svg>
+
+    <!-- Top nav -->
+    <nav class="dp-nav">
+      <span class="label">Selected Works</span>
+      <div class="actions">
+        <a class="lnk" href="#">Sign Up</a>
+        <button class="pill">Join Us</button>
+      </div>
+    </nav>
+
+    <!-- Author footer -->
+    <div class="dp-foot">
+      <div class="avatar">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+          <rect width="40" height="40" fill="#e07830"/>
+          <ellipse cx="20" cy="13" rx="9.5" ry="8.5" fill="#c56010"/>
+          <circle cx="20" cy="17" r="9" fill="#f5b07a"/>
+          <path d="M5 40 Q6 29 20 29 Q34 29 35 40Z" fill="#2a4aaa"/>
+          <path d="M11 11 Q13 3 20 4 Q27 3 29 11" fill="#bf5a0c"/>
+        </svg>
+      </div>
+      <div>
+        <div class="author-name">Andrew.ui</div>
+        <div class="author-role">UI &amp; Illustration</div>
+      </div>
+      <div class="arrows">
+        <button class="arr" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <button class="arr" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div><!-- /dark-panel -->
+
+  <!-- ═══ RIGHT FORM PANEL ═══ -->
+  <div class="form-panel">
+
+    <!-- Top bar -->
+    <div class="rp-top">
+      <span class="brand">UISOCIAL</span>
+      <button class="lang" aria-label="Language">
+        <span style="font-size:14px">🇬🇧</span>
+        <span>EN</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <div class="form-body">
+      <h1 class="form-title">Hi Designer</h1>
+      <p class="form-sub">Welcome to UISOCIAL</p>
+
+      <div class="inp-wrap">
+        <label for="femail" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Email</label>
+        <input id="femail" class="inp" type="email" placeholder="Email" autocomplete="email"/>
+      </div>
+
+      <div class="inp-wrap">
+        <label for="fpass" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Password</label>
+        <input id="fpass" class="inp" type="password" placeholder="Password" autocomplete="current-password"/>
+      </div>
+
+      <div class="forgot-row">
+        <a class="forgot" href="#">Forgot password ?</a>
+      </div>
+
+      <div class="divider">
+        <div class="div-line"></div>
+        <span class="div-or">or</span>
+        <div class="div-line"></div>
+      </div>
+
+      <!-- Google login -->
+      <button class="g-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Login with Google
+      </button>
+
+      <button class="login-btn">Login</button>
+
+      <p class="signup-txt">
+        Don't have an account?&nbsp;<a class="signup-lnk" href="#">Sign up</a>
+      </p>
+    </div>
+
+    <!-- Social icons -->
+    <div class="socials">
+      <!-- Facebook -->
+      <a class="soc" href="#" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+      <!-- Twitter -->
+      <a class="soc" href="#" aria-label="Twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+        </svg>
+      </a>
+      <!-- LinkedIn -->
+      <a class="soc" href="#" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <!-- Instagram -->
+      <a class="soc" href="#" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+    </div>
+
+  </div><!-- /form-panel -->
+</div><!-- /card -->
+</body>
+</html>

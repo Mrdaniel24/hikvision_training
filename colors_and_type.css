@@ -1,0 +1,247 @@
+/* =============================================================
+   KITOTECH DESIGN SYSTEM — Foundations
+   Tokens for color, typography, spacing, radii, shadows, motion.
+   ============================================================= */
+
+/* ---- Brand-supplied face: Poppins Medium (self-hosted) ---- */
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/Poppins-Medium.ttf") format("truetype");
+}
+
+/* ---- Other weights of Poppins + the display & mono families pulled from Google Fonts.
+   When Kitotech supplies the remaining Poppins weights (400 / 600 / 700) and/or licensed
+   display + mono faces, drop them into /fonts and remove the @import below. ---- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ---------- Brand Color ---------- */
+  /* Two-tone brand: Signal Red + Trust Blue. Sampled from the official logo. */
+  --brand-red:        #E1141C;   /* Primary accent — CTAs, alerts, K mark. */
+  --brand-red-hot:    #FF2733;   /* Hover state for red */
+  --brand-red-deep:   #A30E14;   /* Pressed state for red */
+  --brand-red-glow:   rgba(225, 20, 28, 0.35);
+  --brand-red-tint:   rgba(225, 20, 28, 0.08);
+
+  --brand-blue:       #1A37D5;   /* Corporate / wordmark blue */
+  --brand-blue-hot:   #2C4DF5;   /* Hover state for blue */
+  --brand-blue-deep:  #12259B;   /* Pressed state for blue */
+  --brand-blue-glow:  rgba(26, 55, 213, 0.30);
+  --brand-blue-tint:  rgba(26, 55, 213, 0.06);
+  --brand-blue-light: #A8B4FF;   /* Legible on dark backgrounds */
+
+  /* ---------- Neutrals — Dark Surface Family ---------- */
+  --ink-0:   #050507;   /* Pure base, full-bleed dark */
+  --ink-1:   #0A0A0C;   /* Default dark surface */
+  --ink-2:   #111114;   /* Elevated surface (cards) */
+  --ink-3:   #18181D;   /* Interactive / hover on dark */
+  --ink-4:   #1F1F25;   /* Pressed / selected on dark */
+  --hair-d:  #25252C;   /* Hairline border on dark */
+  --hair-d2: #34343C;   /* Stronger hairline on dark */
+
+  /* ---------- Neutrals — Light Surface Family ---------- */
+  --paper-0: #FFFFFF;   /* Pure white */
+  --paper-1: #FAFAF9;   /* Default light surface (warm-neutral, not cold) */
+  --paper-2: #F2F2F1;   /* Elevated panel on light */
+  --paper-3: #E9E9E8;   /* Pressed on light */
+  --hair-l:  #E7E7E5;   /* Hairline border on light */
+  --hair-l2: #D4D4D2;   /* Stronger hairline on light */
+
+  /* ---------- Foreground (text) ---------- */
+  --fg-on-dark-1:   #FAFAF9;   /* Primary text on dark */
+  --fg-on-dark-2:   #B8B8BD;   /* Secondary text on dark */
+  --fg-on-dark-3:   #6F6F76;   /* Tertiary / meta on dark */
+  --fg-on-dark-4:   #4A4A50;   /* Disabled on dark */
+
+  --fg-on-light-1:  #0A0A0C;   /* Primary text on light */
+  --fg-on-light-2:  #4A4A50;   /* Secondary text on light */
+  --fg-on-light-3:  #76767D;   /* Tertiary / meta on light */
+  --fg-on-light-4:  #A8A8AE;   /* Disabled on light */
+
+  /* ---------- Semantic / status ---------- */
+  --status-online:  #1DBB6A;
+  --status-warn:    #F5A623;
+  --status-alert:   var(--brand-red);
+  --status-offline: #6F6F76;
+  --status-info:    var(--brand-blue);
+
+  /* ---------- Type families ---------- */
+  --font-display: "Space Grotesk", "Inter Tight", system-ui, sans-serif;
+  --font-body:    "Poppins", "Manrope", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---------- Display scale ---------- */
+  /* Tightly-tracked, geometric. Use for hero & section titles. */
+  --display-1: 700 clamp(56px, 7vw, 104px)/0.98 var(--font-display);
+  --display-2: 600 clamp(40px, 5vw, 72px)/1.02 var(--font-display);
+  --display-3: 600 clamp(32px, 3.8vw, 52px)/1.06 var(--font-display);
+
+  /* ---------- Heading scale ---------- */
+  --h1: 600 40px/1.1 var(--font-display);
+  --h2: 600 28px/1.18 var(--font-display);
+  --h3: 600 20px/1.25 var(--font-display);
+  --h4: 600 16px/1.3  var(--font-display);
+
+  /* ---------- Body scale ---------- */
+  --body-lg:  400 18px/1.55 var(--font-body);
+  --body:     400 15px/1.55 var(--font-body);
+  --body-sm:  400 13px/1.5  var(--font-body);
+
+  /* ---------- Labels / UI ---------- */
+  --label:       500 13px/1.2 var(--font-body);
+  --label-sm:    500 11px/1.2 var(--font-body);
+  --eyebrow:     600 11px/1.4 var(--font-display);  /* uppercase, tracked */
+  --mono-data:   500 13px/1.3 var(--font-mono);
+  --mono-sm:     500 11px/1.3 var(--font-mono);
+
+  /* ---------- Letter-spacing ---------- */
+  --tracked-tight:   -0.02em;   /* display headings */
+  --tracked-snug:    -0.01em;   /* h1/h2 */
+  --tracked-normal:  0;
+  --tracked-wide:    0.04em;
+  --tracked-eyebrow: 0.18em;    /* small uppercase eyebrows */
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+  --s-32: 128px;
+
+  /* ---------- Radii ---------- */
+  /* Sharp & technical. No bouncy rounding. */
+  --r-0: 0;
+  --r-1: 2px;     /* tight chips */
+  --r-2: 4px;     /* buttons, inputs */
+  --r-3: 8px;     /* cards */
+  --r-4: 12px;    /* large cards / panels */
+  --r-pill: 999px;
+
+  /* ---------- Shadows / Elevation ---------- */
+  /* Light surface shadows — soft, low spread */
+  --shadow-1: 0 1px 2px rgba(10,10,12,0.04), 0 1px 1px rgba(10,10,12,0.03);
+  --shadow-2: 0 4px 14px rgba(10,10,12,0.06), 0 1px 2px rgba(10,10,12,0.04);
+  --shadow-3: 0 12px 32px rgba(10,10,12,0.10), 0 2px 6px rgba(10,10,12,0.05);
+  --shadow-4: 0 24px 64px rgba(10,10,12,0.14), 0 6px 12px rgba(10,10,12,0.06);
+
+  /* Inner highlight for dark cards (top-edge sheen) */
+  --inner-top: inset 0 1px 0 rgba(255,255,255,0.05);
+
+  /* Red signal glow — used sparingly on alert/active states */
+  --glow-red: 0 0 0 1px var(--brand-red), 0 0 24px var(--brand-red-glow);
+  --glow-red-soft: 0 0 32px var(--brand-red-glow);
+
+  /* ---------- Motion ---------- */
+  --ease-out:     cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast:     120ms;
+  --dur-base:     220ms;
+  --dur-slow:     420ms;
+  --dur-page:     680ms;
+
+  /* ---------- Z-index ---------- */
+  --z-nav: 50;
+  --z-modal: 100;
+  --z-toast: 200;
+  --z-overlay: 90;
+}
+
+/* =============================================================
+   SEMANTIC TYPE PRESETS — utility classes
+   Use these directly: <h1 class="display-1">...</h1>
+   ============================================================= */
+
+.display-1 { font: var(--display-1); letter-spacing: var(--tracked-tight); }
+.display-2 { font: var(--display-2); letter-spacing: var(--tracked-tight); }
+.display-3 { font: var(--display-3); letter-spacing: var(--tracked-snug); }
+
+.h1 { font: var(--h1); letter-spacing: var(--tracked-snug); }
+.h2 { font: var(--h2); letter-spacing: var(--tracked-snug); }
+.h3 { font: var(--h3); letter-spacing: var(--tracked-snug); }
+.h4 { font: var(--h4); letter-spacing: var(--tracked-normal); }
+
+.body-lg { font: var(--body-lg); }
+.body    { font: var(--body); }
+.body-sm { font: var(--body-sm); }
+
+.label    { font: var(--label); }
+.label-sm { font: var(--label-sm); }
+
+.eyebrow {
+  font: var(--eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--tracked-eyebrow);
+}
+
+.mono      { font: var(--mono-data); }
+.mono-sm   { font: var(--mono-sm); }
+
+/* =============================================================
+   FUNDAMENTAL ELEMENT DEFAULTS
+   Opt-in by applying to a root element with class="kt".
+   ============================================================= */
+
+.kt, .kt * { box-sizing: border-box; }
+
+.kt {
+  color: var(--fg-on-light-1);
+  background: var(--paper-1);
+  font: var(--body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.kt.kt-dark {
+  color: var(--fg-on-dark-1);
+  background: var(--ink-1);
+}
+
+.kt h1 { font: var(--display-3); letter-spacing: var(--tracked-tight); margin: 0; }
+.kt h2 { font: var(--h1); letter-spacing: var(--tracked-snug); margin: 0; }
+.kt h3 { font: var(--h2); letter-spacing: var(--tracked-snug); margin: 0; }
+.kt h4 { font: var(--h3); letter-spacing: var(--tracked-snug); margin: 0; }
+.kt p  { font: var(--body); margin: 0; }
+
+.kt code, .kt .num {
+  font: var(--mono-data);
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* =============================================================
+   GRID / SCANLINE TEXTURES — reusable backgrounds
+   ============================================================= */
+
+.bg-grid-dark {
+  background-color: var(--ink-1);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.bg-grid-light {
+  background-color: var(--paper-1);
+  background-image:
+    linear-gradient(rgba(10,10,12,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,10,12,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.bg-dot-dark {
+  background-color: var(--ink-1);
+  background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
