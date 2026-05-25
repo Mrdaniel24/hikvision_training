@@ -378,7 +378,6 @@ function SuccessPanel({ form, city, onReset }) {
         </div>
 
         <div className="success-next">
-          <button className="btn-ghost" onClick={() => window.print()}>Chapisha</button>
           <button className="btn-ghost" onClick={onReset}>Sajili mtu mwingine</button>
         </div>
       </div>
