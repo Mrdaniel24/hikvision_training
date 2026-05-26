@@ -299,7 +299,8 @@ function FormPanel({ form, setField, errors, onSubmit, submitting }) {
       </div>
 
       <div className="social-row">
-        <a href="https://www.instagram.com/kitotech_?igsh=MTFoc2hyYng5dDJ4Nw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <a href="https://www.instagram.com/kitotech_?igsh=MTFoc2hyYng5dDJ4Nw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{display:"inline-flex",alignItems:"center",gap:"6px"}}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor"/></svg>
           Follow us
         </a>
       </div>
