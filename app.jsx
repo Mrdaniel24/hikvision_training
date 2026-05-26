@@ -299,17 +299,8 @@ function FormPanel({ form, setField, errors, onSubmit, submitting }) {
       </div>
 
       <div className="social-row">
-        <a href="#" aria-label="Facebook" title="Facebook">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.6c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.2v2.4H7.9v3h2.5V21h3.1z"/></svg>
-        </a>
-        <a href="#" aria-label="Twitter" title="Twitter / X">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.7 4h2.7l-5.9 6.7L21 20h-5.5l-4.3-5.6L6.3 20H3.6l6.3-7.2L3 4h5.6l3.9 5.1L17.7 4zm-.9 14.4h1.5L7.3 5.5H5.7l11.1 12.9z"/></svg>
-        </a>
-        <a href="#" aria-label="LinkedIn" title="LinkedIn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5.5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0zM7 8.25H3V20h4V8.25zM13.32 8.25H9.5V20h3.78v-6.2c0-3.5 4.55-3.79 4.55 0V20H21.6v-7.5c0-5.92-6.77-5.7-8.28-2.79V8.25z"/></svg>
-        </a>
-        <a href="#" aria-label="Instagram" title="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor"/></svg>
+        <a href="https://www.instagram.com/kitotech_?igsh=MTFoc2hyYng5dDJ4Nw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          Follow us
         </a>
       </div>
     </div>
