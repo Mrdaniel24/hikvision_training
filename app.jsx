@@ -33,28 +33,28 @@ const CITIES = [
       body: "Jisajili kwa kituo chako.",
       size: "xl"
     },
-    waLink: "https://chat.whatsapp.com/KitotechHikvision-Moshi-2026" },
+    waLink: "https://chat.whatsapp.com/Kz67I3ZSaHbKxXM1PnO07m?s=cl&p=a&mlu=2" },
   { id: "arusha",  name: "Arusha",  region: "Arusha",          dateRange: "11 — 13 Juni", initials: "AR",
     narrative: {
       heading: "Mikoa minne.\nWiki mbili.",
       body: "Kitotech Group — wakala mkuu wa Hikvision Tanzania — inakuletea mafunzo ya kitaalamu kwenye mikoa minne: Moshi, Arusha, Karatu na Singida.",
       size: "md"
     },
-    waLink: "https://chat.whatsapp.com/KitotechHikvision-Arusha-2026" },
+    waLink: "https://chat.whatsapp.com/DugTAm0ziGS7K79e9NSKKE?s=cl&p=a&mlu=2" },
   { id: "karatu",  name: "Karatu",  region: "Arusha", dateRange: "08 — 10 Juni", initials: "KA",
     narrative: {
       heading: "Jaza fomu hapa chini.",
       body: "Andika jina lako, simu, na chagua mkoa unaopendelea kuhudhuria.",
       size: "lg"
     },
-    waLink: "https://chat.whatsapp.com/KitotechHikvision-Karatu-2026" },
+    waLink: "https://chat.whatsapp.com/KjzlGYb7MDtI7kgj9fUKMA?s=cl&p=a&mlu=2" },
   { id: "singida", name: "Singida", region: "Singida",         dateRange: "17 — 19 Juni", initials: "SI",
     narrative: {
       heading: "Baada ya kujisajili.",
       body: "Utapata ratiba ya kituo chako na kiungo cha WhatsApp group.",
       size: "lg"
     },
-    waLink: "https://chat.whatsapp.com/KitotechHikvision-Singida-2026" },
+    waLink: "https://chat.whatsapp.com/ISeS6J92CmLHHg5ndMjWPy?s=cl&p=a&mlu=2" },
 ];
 
 const ROLES = []; // (haitumiki) — fields zimepunguzwa
