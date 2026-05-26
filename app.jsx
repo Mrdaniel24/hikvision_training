@@ -41,7 +41,7 @@ const CITIES = [
       size: "md"
     },
     waLink: "https://chat.whatsapp.com/KitotechHikvision-Arusha-2026" },
-  { id: "karatu",  name: "Karatu",  region: "Kilimanjaro", dateRange: "08 — 10 Juni", initials: "KA",
+  { id: "karatu",  name: "Karatu",  region: "Arusha", dateRange: "08 — 10 Juni", initials: "KA",
     narrative: {
       heading: "Jaza fomu hapa chini.",
       body: "Andika jina lako, simu, na chagua mkoa unaopendelea kuhudhuria.",
