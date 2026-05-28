@@ -68,6 +68,39 @@ const SLIDES = [
 ];
 
 // ============================================================
+// Constants
+// ============================================================
+const MAX_SLOTS = 50;
+
+// ============================================================
+// Slots Full Modal
+// ============================================================
+function SlotsFullModal({ count }) {
+  return (
+    <div className="modal-overlay slots-full-overlay">
+      <div className="modal-box slots-full-box">
+        <div className="slots-icon" aria-hidden="true">🔒</div>
+        <h2 className="slots-title">Nafasi Zimejaa!</h2>
+        <div className="slots-badge">{count ?? MAX_SLOTS} / {MAX_SLOTS} Washiriki</div>
+        <p className="slots-body">
+          Samahani, mafunzo ya Hikvision Tanzania 2026 yamejaa.
+          Washiriki wote <strong>{MAX_SLOTS}</strong> wameshaandikishwa.
+        </p>
+        <div className="slots-divider" />
+        <p className="slots-contact-label">Je, una swali? Wasiliana nasi:</p>
+        <a className="slots-wa" href="https://wa.me/255712000000" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M20 11.5a8 8 0 0 1-12.4 6.7L4 20l1.9-3.5A8 8 0 1 1 20 11.5zm-8 6.4c3.5 0 6.4-2.9 6.4-6.4S15.5 5.1 12 5.1 5.6 8 5.6 11.5c0 1.3.4 2.5 1.1 3.5l-.7 2.2 2.3-.6c1 .8 2.3 1.3 3.7 1.3zm3.3-4.6c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.3-.3c.1-.1.1-.2.2-.3 0-.1 0-.2 0-.3 0-.1-.4-.9-.5-1.2-.1-.3-.3-.3-.4-.3h-.4c-.1 0-.3 0-.5.2-.2.2-.7.7-.7 1.6 0 .9.7 1.9.8 2 .1.1 1.4 2.1 3.4 3 .5.2.8.3 1.1.4.5.1.9.1 1.2.1.4 0 1.1-.5 1.3-.9.2-.4.2-.8.1-.9 0-.1-.2-.1-.4-.2z"/>
+          </svg>
+          Piga Simu / WhatsApp: +255 712 000 000
+        </a>
+        <div className="slots-footer">© 2026 Kitotech Group Ltd · Hikvision Tanzania</div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // Admin login modal
 // ============================================================
 function AdminModal({ onClose, onSuccess }) {
@@ -388,6 +421,17 @@ function App() {
   const [visualCityId, setVisualCityId] = useState(CITIES[0].id);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminReady, setAdminReady]         = useState(false);
+  const [slotsFull, setSlotsFull]           = useState(false);
+  const [slotsCount, setSlotsCount]         = useState(null);
+
+  useEffect(() => {
+    db.from("registrations")
+      .select("*", { count: "exact", head: true })
+      .then(({ count }) => {
+        if (count !== null) setSlotsCount(count);
+        if (count >= MAX_SLOTS) setSlotsFull(true);
+      });
+  }, []);
 
   const setField = (k, v) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -409,6 +453,18 @@ function App() {
   const submit = async () => {
     if (!validate()) return;
     setSubmitting(true);
+
+    // Re-check count right before inserting to prevent race conditions
+    const { count: currentCount } = await db
+      .from("registrations")
+      .select("*", { count: "exact", head: true });
+    if (currentCount !== null) setSlotsCount(currentCount);
+    if (currentCount >= MAX_SLOTS) {
+      setSlotsFull(true);
+      setSubmitting(false);
+      return;
+    }
+
     const { error } = await db.from("registrations").insert({
       full_name: form.fullName,
       phone:     form.phone,
@@ -423,6 +479,9 @@ function App() {
       }
       return;
     }
+
+    // Update local count after successful insert
+    setSlotsCount((prev) => (prev !== null ? prev + 1 : null));
     setSubmitted(true);
     setVisualCityId(form.city);
   };
@@ -451,6 +510,7 @@ function App() {
 
   return (
     <div className="stage" data-screen-label="Registration">
+      {slotsFull && <SlotsFullModal count={slotsCount} />}
       {showAdminModal && (
         <AdminModal onClose={() => setShowAdminModal(false)} onSuccess={handleAdminSuccess} />
       )}
