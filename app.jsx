@@ -74,24 +74,42 @@ const MAX_SLOTS = 50;
 
 // ============================================================
 // Slots Full Modal
+// city = CITIES object  → specific city full (dismissable)
+// city = null           → ALL cities full (non-dismissable)
 // ============================================================
-function SlotsFullModal({ count }) {
+const WaIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+    <path d="M20 11.5a8 8 0 0 1-12.4 6.7L4 20l1.9-3.5A8 8 0 1 1 20 11.5zm-8 6.4c3.5 0 6.4-2.9 6.4-6.4S15.5 5.1 12 5.1 5.6 8 5.6 11.5c0 1.3.4 2.5 1.1 3.5l-.7 2.2 2.3-.6c1 .8 2.3 1.3 3.7 1.3zm3.3-4.6c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.3-.3c.1-.1.1-.2.2-.3 0-.1 0-.2 0-.3 0-.1-.4-.9-.5-1.2-.1-.3-.3-.3-.4-.3h-.4c-.1 0-.3 0-.5.2-.2.2-.7.7-.7 1.6 0 .9.7 1.9.8 2 .1.1 1.4 2.1 3.4 3 .5.2.8.3 1.1.4.5.1.9.1 1.2.1.4 0 1.1-.5 1.3-.9.2-.4.2-.8.1-.9 0-.1-.2-.1-.4-.2z"/>
+  </svg>
+);
+
+function SlotsFullModal({ city, onClose }) {
+  const allFull = city === null;
   return (
-    <div className="modal-overlay slots-full-overlay">
-      <div className="modal-box slots-full-box">
+    <div className="modal-overlay slots-full-overlay" onClick={allFull ? undefined : onClose}>
+      <div className="modal-box slots-full-box" onClick={(e) => e.stopPropagation()}>
         <div className="slots-icon" aria-hidden="true">🔒</div>
-        <h2 className="slots-title">Nafasi Zimejaa!</h2>
-        <div className="slots-badge">{count ?? MAX_SLOTS} / {MAX_SLOTS} Washiriki</div>
+        <h2 className="slots-title">
+          {allFull ? "Nafasi Zimejaa!" : `${city.name} Imejaa!`}
+        </h2>
+        <div className="slots-badge">
+          {MAX_SLOTS} / {MAX_SLOTS} Washiriki{city ? ` · ${city.name}` : ""}
+        </div>
         <p className="slots-body">
-          Samahani, mafunzo ya Hikvision Tanzania 2026 yamejaa.
-          Washiriki wote <strong>{MAX_SLOTS}</strong> wameshaandikishwa.
+          {allFull
+            ? `Samahani, mafunzo yote ya Hikvision Tanzania 2026 yamejaa. Mikoa yote minne imeshafikia washiriki ${MAX_SLOTS}.`
+            : `Samahani, mkoa wa ${city.name} umejaa. Washiriki wote ${MAX_SLOTS} wameshaandikishwa kwa kituo hiki. Tafadhali chagua mkoa mwingine ulio wazi.`
+          }
         </p>
         <div className="slots-divider" />
+        {!allFull && (
+          <button className="modal-btn slots-other-btn" onClick={onClose}>
+            Chagua Mkoa Mwingine
+          </button>
+        )}
         <p className="slots-contact-label">Je, una swali? Wasiliana nasi:</p>
         <a className="slots-wa" href="https://wa.me/255712000000" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
-            <path d="M20 11.5a8 8 0 0 1-12.4 6.7L4 20l1.9-3.5A8 8 0 1 1 20 11.5zm-8 6.4c3.5 0 6.4-2.9 6.4-6.4S15.5 5.1 12 5.1 5.6 8 5.6 11.5c0 1.3.4 2.5 1.1 3.5l-.7 2.2 2.3-.6c1 .8 2.3 1.3 3.7 1.3zm3.3-4.6c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.3-.3c.1-.1.1-.2.2-.3 0-.1 0-.2 0-.3 0-.1-.4-.9-.5-1.2-.1-.3-.3-.3-.4-.3h-.4c-.1 0-.3 0-.5.2-.2.2-.7.7-.7 1.6 0 .9.7 1.9.8 2 .1.1 1.4 2.1 3.4 3 .5.2.8.3 1.1.4.5.1.9.1 1.2.1.4 0 1.1-.5 1.3-.9.2-.4.2-.8.1-.9 0-.1-.2-.1-.4-.2z"/>
-          </svg>
+          <WaIcon />
           Piga Simu / WhatsApp: +255 712 000 000
         </a>
         <div className="slots-footer">© 2026 Kitotech Group Ltd · Hikvision Tanzania</div>
@@ -274,7 +292,7 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
 // ============================================================
 // Form panel — single form
 // ============================================================
-function FormPanel({ form, setField, errors, onSubmit, submitting }) {
+function FormPanel({ form, setField, errors, onSubmit, submitting, fullCities }) {
   return (
     <div className="shell-form">
       <div className="form-top">
@@ -315,9 +333,14 @@ function FormPanel({ form, setField, errors, onSubmit, submitting }) {
             onChange={(e) => setField("city", e.target.value)}
             className={errors.city ? "err" : ""}>
             <option value="">Chagua Mkoa</option>
-            {CITIES.map((c) => (
-              <option key={c.id} value={c.id}>{c.name} · {c.dateRange}</option>
-            ))}
+            {CITIES.map((c) => {
+              const full = fullCities && fullCities.has(c.id);
+              return (
+                <option key={c.id} value={c.id} disabled={full}>
+                  {c.name} · {c.dateRange}{full ? " · Imejaa" : ""}
+                </option>
+              );
+            })}
           </select>
           {errors.city && <div className="err-msg">{errors.city}</div>}
         </div>
@@ -421,16 +444,29 @@ function App() {
   const [visualCityId, setVisualCityId] = useState(CITIES[0].id);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminReady, setAdminReady]         = useState(false);
-  const [slotsFull, setSlotsFull]           = useState(false);
-  const [slotsCount, setSlotsCount]         = useState(null);
+  // cityCounts: { moshi: 23, arusha: 50, ... }
+  const [cityCounts, setCityCounts]         = useState({});
+  // slotsModal: false=hidden | null=all cities full | CITIES object=specific city full
+  const [slotsModal, setSlotsModal]         = useState(false);
+
+  const fetchCityCounts = async () => {
+    const counts = {};
+    await Promise.all(CITIES.map(async (c) => {
+      const { count } = await db
+        .from("registrations")
+        .select("*", { count: "exact", head: true })
+        .eq("city", c.id);
+      counts[c.id] = count ?? 0;
+    }));
+    setCityCounts(counts);
+    return counts;
+  };
 
   useEffect(() => {
-    db.from("registrations")
-      .select("*", { count: "exact", head: true })
-      .then(({ count }) => {
-        if (count !== null) setSlotsCount(count);
-        if (count >= MAX_SLOTS) setSlotsFull(true);
-      });
+    fetchCityCounts().then((counts) => {
+      const allFull = CITIES.every((c) => (counts[c.id] ?? 0) >= MAX_SLOTS);
+      if (allFull) setSlotsModal(null);
+    });
   }, []);
 
   const setField = (k, v) => {
@@ -454,13 +490,19 @@ function App() {
     if (!validate()) return;
     setSubmitting(true);
 
-    // Re-check count right before inserting to prevent race conditions
-    const { count: currentCount } = await db
+    // Re-check the selected city's count right before inserting (race condition guard)
+    const { count: cityCount } = await db
       .from("registrations")
-      .select("*", { count: "exact", head: true });
-    if (currentCount !== null) setSlotsCount(currentCount);
-    if (currentCount >= MAX_SLOTS) {
-      setSlotsFull(true);
+      .select("*", { count: "exact", head: true })
+      .eq("city", form.city);
+
+    const updatedCounts = { ...cityCounts, [form.city]: cityCount ?? cityCounts[form.city] ?? 0 };
+    setCityCounts(updatedCounts);
+
+    if ((cityCount ?? 0) >= MAX_SLOTS) {
+      const fullCity = CITIES.find((c) => c.id === form.city) || null;
+      const allFull = CITIES.every((c) => (updatedCounts[c.id] ?? 0) >= MAX_SLOTS);
+      setSlotsModal(allFull ? null : fullCity);
       setSubmitting(false);
       return;
     }
@@ -480,8 +522,8 @@ function App() {
       return;
     }
 
-    // Update local count after successful insert
-    setSlotsCount((prev) => (prev !== null ? prev + 1 : null));
+    // Update local count for this city after successful insert
+    setCityCounts((prev) => ({ ...prev, [form.city]: (prev[form.city] ?? 0) + 1 }));
     setSubmitted(true);
     setVisualCityId(form.city);
   };
@@ -508,9 +550,16 @@ function App() {
     setTimeout(() => { window.location.href = "Admin.html"; }, 600);
   };
 
+  const fullCities = useMemo(
+    () => new Set(CITIES.filter((c) => (cityCounts[c.id] ?? 0) >= MAX_SLOTS).map((c) => c.id)),
+    [cityCounts]
+  );
+
   return (
     <div className="stage" data-screen-label="Registration">
-      {slotsFull && <SlotsFullModal count={slotsCount} />}
+      {slotsModal !== false && (
+        <SlotsFullModal city={slotsModal} onClose={() => setSlotsModal(false)} />
+      )}
       {showAdminModal && (
         <AdminModal onClose={() => setShowAdminModal(false)} onSuccess={handleAdminSuccess} />
       )}
@@ -526,7 +575,7 @@ function App() {
           />
           {submitted
             ? <SuccessPanel form={form} city={submittedCity} onReset={reset} />
-            : <FormPanel form={form} setField={setField} errors={errors} onSubmit={submit} submitting={submitting} />
+            : <FormPanel form={form} setField={setField} errors={errors} onSubmit={submit} submitting={submitting} fullCities={fullCities} />
           }
         </div>
       </div>

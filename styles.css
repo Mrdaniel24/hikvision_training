@@ -151,6 +151,9 @@ a { color: inherit; }
   background: var(--hair-l2);
   margin: 0 auto 18px;
 }
+.slots-other-btn {
+  width: 100%; margin-bottom: 16px;
+}
 .slots-contact-label {
   font: 500 12px/1 var(--font-display);
   letter-spacing: 0.1em;
