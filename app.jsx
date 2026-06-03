@@ -121,6 +121,197 @@ function SlotsFullModal({ city, onClose }) {
 }
 
 // ============================================================
+// Lookup / Verify Registration Modal
+// ============================================================
+function LookupModal({ onClose }) {
+  const [step, setStep]               = useState("search");
+  const [nameInput, setNameInput]     = useState("");
+  const [phoneInput, setPhoneInput]   = useState("");
+  const [cityInput, setCityInput]     = useState("");
+  const [loading, setLoading]         = useState(false);
+  const [record, setRecord]           = useState(null);
+  const [nameErr, setNameErr]         = useState("");
+  const [fallbackErr, setFallbackErr] = useState("");
+
+  const searchByName = async () => {
+    const name = nameInput.trim();
+    if (!name) { setNameErr("Andika jina lako"); return; }
+    setNameErr(""); setLoading(true);
+    const { data } = await db
+      .from("registrations")
+      .select("*")
+      .ilike("full_name", name)
+      .limit(1);
+    setLoading(false);
+    if (data && data.length > 0) { setRecord(data[0]); setStep("found"); }
+    else setStep("fallback");
+  };
+
+  const verifyByPhone = async () => {
+    const digits = phoneInput.replace(/\D/g, "").slice(-9);
+    if (digits.length < 9 || !cityInput) { setFallbackErr("Jaza namba ya simu na mkoa"); return; }
+    setFallbackErr(""); setLoading(true);
+    const { data } = await db
+      .from("registrations")
+      .select("*")
+      .ilike("phone", `%${digits}`)
+      .eq("city", cityInput)
+      .limit(1);
+    setLoading(false);
+    if (data && data.length > 0) { setRecord(data[0]); setStep("verified"); }
+    else setStep("notfound");
+  };
+
+  const openReceipt = () => {
+    const city = CITIES.find((c) => c.id === record.city) || { name: record.city, dateRange: "" };
+    const regId = String(record.id || "").padStart(5, "0");
+    const w = window.open("", "_blank", "width=580,height=780");
+    w.document.write(`<!DOCTYPE html><html lang="sw"><head><meta charset="UTF-8">
+<title>Risiti — ${record.full_name}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;display:flex;justify-content:center;padding:36px 20px}
+.card{background:#fff;width:520px;border-radius:14px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,.14)}
+.hd{background:#cc0000;color:#fff;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
+.hd-brand{font-size:14px;font-weight:800;letter-spacing:2px}
+.hd-sub{font-size:11px;opacity:.75;margin-top:3px;letter-spacing:.5px}
+.hd-hk{font-size:30px;font-weight:900;letter-spacing:-2px;opacity:.9}
+.bd{padding:30px}
+.stamp{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.chk{width:50px;height:50px;background:#16a34a;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:700;flex-shrink:0}
+.st1{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px}
+.st2{font-size:17px;font-weight:700;color:#111;margin-top:3px}
+hr{border:none;border-top:1px solid #eee;margin:18px 0}
+.row{margin-bottom:14px}
+.lb{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
+.vl{font-size:15px;font-weight:600;color:#111}
+.refbox{background:#fff8f8;border:1.5px solid #fca5a5;border-radius:10px;padding:18px;text-align:center;margin-top:20px}
+.refbox .lb{color:#dc2626}
+.refbox .vl{font-size:34px;font-weight:800;color:#cc0000;letter-spacing:4px;margin-top:6px}
+.ft{background:#111;color:#666;text-align:center;padding:14px;font-size:11px;margin-top:0}
+.ft strong{color:#aaa}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;border-radius:0;width:100%}}
+</style></head><body>
+<div class="card">
+  <div class="hd">
+    <div><div class="hd-brand">KITOTECH × HIKVISION</div><div class="hd-sub">Wakala Mkuu · Tanzania 2026</div></div>
+    <div class="hd-hk">HK</div>
+  </div>
+  <div class="bd">
+    <div class="stamp">
+      <div class="chk">✓</div>
+      <div><div class="st1">Uthibitisho wa Usajili</div><div class="st2">Umesajiliwa Kikamilifu</div></div>
+    </div>
+    <hr>
+    <div class="row"><div class="lb">Jina Kamili</div><div class="vl">${record.full_name}</div></div>
+    <div class="row"><div class="lb">Namba ya Simu</div><div class="vl">${record.phone}</div></div>
+    <div class="row"><div class="lb">Mkoa wa Mafunzo</div><div class="vl">${city.name}</div></div>
+    <div class="row"><div class="lb">Tarehe za Mafunzo</div><div class="vl">${city.dateRange} · 2026</div></div>
+    <hr>
+    <div class="refbox">
+      <div class="lb">Namba ya Usajili</div>
+      <div class="vl">#${regId}</div>
+    </div>
+  </div>
+  <div class="ft"><strong>Kitotech Group Ltd</strong> · Wakala Mkuu wa Hikvision Tanzania · © 2026</div>
+</div>
+<script>window.onload=function(){ setTimeout(function(){ window.print(); }, 400); }<\/script>
+</body></html>`);
+    w.document.close();
+  };
+
+  const RecordCard = () => {
+    const city = CITIES.find((c) => c.id === record.city) || { name: record.city, dateRange: "" };
+    const regId = String(record.id || "").padStart(5, "0");
+    return (
+      <div className="lkp-record">
+        <div className="lkp-found-badge">
+          <span className="lkp-chk">✓</span>
+          <div>
+            <div className="lkp-rec-label">Uthibitisho wa Usajili</div>
+            <div className="lkp-rec-name">{record.full_name}</div>
+          </div>
+        </div>
+        <div className="lkp-grid">
+          <div className="lkp-cell"><div className="k">Mkoa</div><div className="v">{city.name}</div></div>
+          <div className="lkp-cell"><div className="k">Tarehe</div><div className="v">{city.dateRange} · 2026</div></div>
+          <div className="lkp-cell"><div className="k">Simu</div><div className="v">{record.phone}</div></div>
+          <div className="lkp-cell"><div className="k">Namba ya Usajili</div><div className="v lkp-ref">#{regId}</div></div>
+        </div>
+        <button className="modal-btn" onClick={openReceipt}>
+          ↓ &nbsp;Pakua / Chapisha Risiti
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box lkp-box" onClick={(e) => e.stopPropagation()}>
+        <button className="lkp-close-btn" onClick={onClose} aria-label="Funga">✕</button>
+
+        {step === "search" && (<>
+          <div className="modal-logo">
+            <img src="assets/kitotech-horizontal.png" alt="Kitotech" style={{ height: 26 }} />
+          </div>
+          <h3 className="modal-title">Angalia Usajili Wako</h3>
+          <p className="lkp-hint">Andika jina lako kama ulivyosajili</p>
+          <div className="modal-fields">
+            <input type="text" value={nameInput} autoFocus
+              className={nameErr ? "err" : ""}
+              placeholder="Jina Kamili  ·  mfano John Mwangi"
+              onChange={(e) => { setNameInput(e.target.value); setNameErr(""); }}
+              onKeyDown={(e) => e.key === "Enter" && searchByName()} />
+            {nameErr && <div className="modal-err">{nameErr}</div>}
+          </div>
+          <button className="modal-btn" onClick={searchByName} disabled={loading}>
+            {loading ? "Inatafuta..." : "Tafuta →"}
+          </button>
+        </>)}
+
+        {(step === "found" || step === "verified") && record && (<>
+          <div className="lkp-status-icon lkp-ok">✓</div>
+          <h3 className="modal-title lkp-green">Imepatikana!</h3>
+          <RecordCard />
+        </>)}
+
+        {step === "fallback" && (<>
+          <div className="lkp-status-icon lkp-warn">?</div>
+          <h3 className="modal-title">Jina Halikupatikana</h3>
+          <p className="lkp-hint">Labda jina limekosewa kidogo. Thibitisha kwa namba ya simu na mkoa wako.</p>
+          <div className="modal-fields">
+            <input type="tel" value={phoneInput} autoFocus
+              placeholder="Namba ya Simu  ·  +255 712 345 678"
+              onChange={(e) => { setPhoneInput(e.target.value); setFallbackErr(""); }}
+              onKeyDown={(e) => e.key === "Enter" && verifyByPhone()} />
+            <select value={cityInput}
+              onChange={(e) => { setCityInput(e.target.value); setFallbackErr(""); }}>
+              <option value="">Chagua Mkoa</option>
+              {CITIES.map((c) => (
+                <option key={c.id} value={c.id}>{c.name} · {c.dateRange}</option>
+              ))}
+            </select>
+            {fallbackErr && <div className="modal-err">{fallbackErr}</div>}
+          </div>
+          <button className="modal-btn" onClick={verifyByPhone} disabled={loading}>
+            {loading ? "Inathibitisha..." : "Thibitisha →"}
+          </button>
+          <button className="lkp-back-btn" onClick={() => setStep("search")}>← Rudi</button>
+        </>)}
+
+        {step === "notfound" && (<>
+          <div className="lkp-status-icon lkp-bad">✗</div>
+          <h3 className="modal-title">Hujasajiliwa</h3>
+          <p className="lkp-hint">Hakuna rekodi inayolingana. Hakikisha uliingiza namba ya simu na mkoa sahihi.</p>
+          <button className="modal-btn" onClick={() => setStep("fallback")}>← Jaribu Tena</button>
+          <button className="lkp-back-btn" onClick={onClose}>Funga</button>
+        </>)}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // Admin login modal
 // ============================================================
 function AdminModal({ onClose, onSuccess }) {
@@ -294,7 +485,7 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
 // ============================================================
 // Form panel — single form
 // ============================================================
-function FormPanel({ form, setField, errors, onSubmit, submitting, fullCities }) {
+function FormPanel({ form, setField, errors, onSubmit, submitting, fullCities, onLookupOpen }) {
   return (
     <div className="shell-form">
       <div className="form-top">
@@ -353,7 +544,7 @@ function FormPanel({ form, setField, errors, onSubmit, submitting, fullCities })
       </button>
 
       <div className="form-foot-line">
-        Umeshajisajili awali? <span className="link" onClick={() => alert("Ingia kwa simu yako utapata ratiba na link ya WhatsApp.")}>Ingia hapa</span>
+        Umeshajisajili awali? <span className="link" onClick={onLookupOpen}>Angalia usajili wako →</span>
       </div>
 
       <div className="social-row">
@@ -446,6 +637,7 @@ function App() {
   const [visualCityId, setVisualCityId] = useState(CITIES[0].id);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminReady, setAdminReady]         = useState(false);
+  const [showLookup, setShowLookup]         = useState(false);
   // cityCounts: { moshi: 23, arusha: 50, ... }
   const [cityCounts, setCityCounts]         = useState({});
   // slotsModal: false=hidden | null=all cities full | CITIES object=specific city full
@@ -562,6 +754,7 @@ function App() {
       {slotsModal !== false && (
         <SlotsFullModal city={slotsModal} onClose={() => setSlotsModal(false)} />
       )}
+      {showLookup && <LookupModal onClose={() => setShowLookup(false)} />}
       {showAdminModal && (
         <AdminModal onClose={() => setShowAdminModal(false)} onSuccess={handleAdminSuccess} />
       )}
@@ -577,7 +770,7 @@ function App() {
           />
           {submitted
             ? <SuccessPanel form={form} city={submittedCity} onReset={reset} />
-            : <FormPanel form={form} setField={setField} errors={errors} onSubmit={submit} submitting={submitting} fullCities={fullCities} />
+            : <FormPanel form={form} setField={setField} errors={errors} onSubmit={submit} submitting={submitting} fullCities={fullCities} onLookupOpen={() => setShowLookup(true)} />
           }
         </div>
       </div>
