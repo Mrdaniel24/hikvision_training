@@ -99,7 +99,7 @@ function SlotsFullModal({ city, onClose }) {
         </div>
         <p className="slots-body">
           {allFull
-            ? `Samahani, mafunzo yote ya Hikvision Tanzania 2026 yamejaa. Mikoa yote minne imeshafikia washiriki ${MAX_SLOTS}.`
+            ? `Samahani, mafunzo yote ya Hikvision Tanzania 2026 yamejaa. Mikoa yote minne imeshafikia kikomo chake cha washiriki.`
             : `Samahani, mkoa wa ${city.name} umejaa. Washiriki wote ${getCityMax(city.id)} wameshaandikishwa kwa kituo hiki. Tafadhali chagua mkoa mwingine ulio wazi.`
           }
         </p>
@@ -110,9 +110,9 @@ function SlotsFullModal({ city, onClose }) {
           </button>
         )}
         <p className="slots-contact-label">Je, una swali? Wasiliana nasi:</p>
-        <a className="slots-wa" href="https://wa.me/255712000000" target="_blank" rel="noopener noreferrer">
+        <a className="slots-wa" href="https://wa.me/255750238187" target="_blank" rel="noopener noreferrer">
           <WaIcon />
-          Piga Simu / WhatsApp: +255 712 000 000
+          Piga Simu / WhatsApp: +255 750 238 187
         </a>
         <div className="slots-footer">© 2026 Kitotech Group Ltd · Hikvision Tanzania</div>
       </div>
@@ -585,7 +585,7 @@ function App() {
         <div>© 2026 Kitotech Group Ltd · Wakala Mkuu wa Hikvision Tanzania</div>
         <div className="right">
           <span>support@kitotech.co.tz</span>
-          <span>+255 712 000 000</span>
+          <span>+255 750 238 187</span>
         </div>
       </footer>
     </div>
