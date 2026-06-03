@@ -71,6 +71,8 @@ const SLIDES = [
 // Constants
 // ============================================================
 const MAX_SLOTS = 50;
+const CITY_MAX_SLOTS = { arusha: 100 }; // per-city override
+const getCityMax = (cityId) => CITY_MAX_SLOTS[cityId] ?? MAX_SLOTS;
 
 // ============================================================
 // Slots Full Modal
@@ -93,12 +95,12 @@ function SlotsFullModal({ city, onClose }) {
           {allFull ? "Nafasi Zimejaa!" : `${city.name} Imejaa!`}
         </h2>
         <div className="slots-badge">
-          {MAX_SLOTS} / {MAX_SLOTS} Washiriki{city ? ` · ${city.name}` : ""}
+          {city ? getCityMax(city.id) : MAX_SLOTS} / {city ? getCityMax(city.id) : MAX_SLOTS} Washiriki{city ? ` · ${city.name}` : ""}
         </div>
         <p className="slots-body">
           {allFull
             ? `Samahani, mafunzo yote ya Hikvision Tanzania 2026 yamejaa. Mikoa yote minne imeshafikia washiriki ${MAX_SLOTS}.`
-            : `Samahani, mkoa wa ${city.name} umejaa. Washiriki wote ${MAX_SLOTS} wameshaandikishwa kwa kituo hiki. Tafadhali chagua mkoa mwingine ulio wazi.`
+            : `Samahani, mkoa wa ${city.name} umejaa. Washiriki wote ${getCityMax(city.id)} wameshaandikishwa kwa kituo hiki. Tafadhali chagua mkoa mwingine ulio wazi.`
           }
         </p>
         <div className="slots-divider" />
@@ -464,7 +466,7 @@ function App() {
 
   useEffect(() => {
     fetchCityCounts().then((counts) => {
-      const allFull = CITIES.every((c) => (counts[c.id] ?? 0) >= MAX_SLOTS);
+      const allFull = CITIES.every((c) => (counts[c.id] ?? 0) >= getCityMax(c.id));
       if (allFull) setSlotsModal(null);
     });
   }, []);
@@ -499,9 +501,9 @@ function App() {
     const updatedCounts = { ...cityCounts, [form.city]: cityCount ?? cityCounts[form.city] ?? 0 };
     setCityCounts(updatedCounts);
 
-    if ((cityCount ?? 0) >= MAX_SLOTS) {
+    if ((cityCount ?? 0) >= getCityMax(form.city)) {
       const fullCity = CITIES.find((c) => c.id === form.city) || null;
-      const allFull = CITIES.every((c) => (updatedCounts[c.id] ?? 0) >= MAX_SLOTS);
+      const allFull = CITIES.every((c) => (updatedCounts[c.id] ?? 0) >= getCityMax(c.id));
       setSlotsModal(allFull ? null : fullCity);
       setSubmitting(false);
       return;
@@ -551,7 +553,7 @@ function App() {
   };
 
   const fullCities = useMemo(
-    () => new Set(CITIES.filter((c) => (cityCounts[c.id] ?? 0) >= MAX_SLOTS).map((c) => c.id)),
+    () => new Set(CITIES.filter((c) => (cityCounts[c.id] ?? 0) >= getCityMax(c.id)).map((c) => c.id)),
     [cityCounts]
   );
 
