@@ -1,4 +1,4 @@
-/* global React, ReactDOM, supabase */
+/* global React, ReactDOM, supabase, html2canvas */
 const { useState, useEffect, useMemo, useRef } = React;
 
 const { createClient } = supabase;
@@ -28,6 +28,7 @@ const SCHEDULE = [
 
 const CITIES = [
   { id: "moshi",   name: "Moshi",   region: "Kilimanjaro",     dateRange: "08 — 10 Juni", initials: "MO",
+    venue: "ELCT UMOJA HOSTEL",
     narrative: {
       heading: "Mafunzo ya Hikvision.",
       body: "Jisajili kwa kituo chako.",
@@ -35,6 +36,7 @@ const CITIES = [
     },
     waLink: "https://chat.whatsapp.com/Kz67I3ZSaHbKxXM1PnO07m?s=cl&p=a&mlu=2" },
   { id: "arusha",  name: "Arusha",  region: "Arusha",          dateRange: "11 — 13 Juni", initials: "AR",
+    venue: "ARUSHA MALL-MAKAO MAPYA",
     narrative: {
       heading: "Mikoa minne.\nWiki mbili.",
       body: "Kitotech Group — wakala mkuu wa Hikvision Tanzania — inakuletea mafunzo ya kitaalamu kwenye mikoa minne: Moshi, Arusha, Karatu na Singida.",
@@ -42,6 +44,7 @@ const CITIES = [
     },
     waLink: "https://chat.whatsapp.com/DugTAm0ziGS7K79e9NSKKE?s=cl&p=a&mlu=2" },
   { id: "karatu",  name: "Karatu",  region: "Arusha", dateRange: "08 — 10 Juni", initials: "KA",
+    venue: "PEACE STATIONARY & GENERAL SUPPLIES",
     narrative: {
       heading: "Jaza fomu hapa chini.",
       body: "Andika jina lako, simu, na chagua mkoa unaopendelea kuhudhuria.",
@@ -49,6 +52,7 @@ const CITIES = [
     },
     waLink: "https://chat.whatsapp.com/KjzlGYb7MDtI7kgj9fUKMA?s=cl&p=a&mlu=2" },
   { id: "singida", name: "Singida", region: "Singida",         dateRange: "17 — 19 Juni", initials: "SI",
+    venue: "KBH BY ROYAL HOTEL",
     narrative: {
       heading: "Baada ya kujisajili.",
       body: "Utapata ratiba ya kituo chako na kiungo cha WhatsApp group.",
@@ -163,61 +167,56 @@ function LookupModal({ onClose }) {
   };
 
   const openReceipt = () => {
-    const city = CITIES.find((c) => c.id === record.city) || { name: record.city, dateRange: "" };
+    const city = CITIES.find((c) => c.id === record.city) || { name: record.city, dateRange: "", venue: "" };
     const regId = String(record.id || "").padStart(5, "0");
-    const w = window.open("", "_blank", "width=580,height=780");
-    w.document.write(`<!DOCTYPE html><html lang="sw"><head><meta charset="UTF-8">
-<title>Risiti — ${record.full_name}</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;display:flex;justify-content:center;padding:36px 20px}
-.card{background:#fff;width:520px;border-radius:14px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,.14)}
-.hd{background:#cc0000;color:#fff;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
-.hd-brand{font-size:14px;font-weight:800;letter-spacing:2px}
-.hd-sub{font-size:11px;opacity:.75;margin-top:3px;letter-spacing:.5px}
-.hd-hk{font-size:30px;font-weight:900;letter-spacing:-2px;opacity:.9}
-.bd{padding:30px}
-.stamp{display:flex;align-items:center;gap:14px;margin-bottom:22px}
-.chk{width:50px;height:50px;background:#16a34a;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:700;flex-shrink:0}
-.st1{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px}
-.st2{font-size:17px;font-weight:700;color:#111;margin-top:3px}
-hr{border:none;border-top:1px solid #eee;margin:18px 0}
-.row{margin-bottom:14px}
-.lb{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
-.vl{font-size:15px;font-weight:600;color:#111}
-.refbox{background:#fff8f8;border:1.5px solid #fca5a5;border-radius:10px;padding:18px;text-align:center;margin-top:20px}
-.refbox .lb{color:#dc2626}
-.refbox .vl{font-size:34px;font-weight:800;color:#cc0000;letter-spacing:4px;margin-top:6px}
-.ft{background:#111;color:#666;text-align:center;padding:14px;font-size:11px;margin-top:0}
-.ft strong{color:#aaa}
-@media print{body{background:#fff;padding:0}.card{box-shadow:none;border-radius:0;width:100%}}
-</style></head><body>
-<div class="card">
-  <div class="hd">
-    <div><div class="hd-brand">KITOTECH × HIKVISION</div><div class="hd-sub">Wakala Mkuu · Tanzania 2026</div></div>
-    <div class="hd-hk">HK</div>
-  </div>
-  <div class="bd">
-    <div class="stamp">
-      <div class="chk">✓</div>
-      <div><div class="st1">Uthibitisho wa Usajili</div><div class="st2">Umesajiliwa Kikamilifu</div></div>
-    </div>
-    <hr>
-    <div class="row"><div class="lb">Jina Kamili</div><div class="vl">${record.full_name}</div></div>
-    <div class="row"><div class="lb">Namba ya Simu</div><div class="vl">${record.phone}</div></div>
-    <div class="row"><div class="lb">Mkoa wa Mafunzo</div><div class="vl">${city.name}</div></div>
-    <div class="row"><div class="lb">Tarehe za Mafunzo</div><div class="vl">${city.dateRange} · 2026</div></div>
-    <hr>
-    <div class="refbox">
-      <div class="lb">Namba ya Usajili</div>
-      <div class="vl">#${regId}</div>
-    </div>
-  </div>
-  <div class="ft"><strong>Kitotech Group Ltd</strong> · Wakala Mkuu wa Hikvision Tanzania · © 2026</div>
-</div>
-<script>window.onload=function(){ setTimeout(function(){ window.print(); }, 400); }<\/script>
-</body></html>`);
-    w.document.close();
+    const safeName = record.full_name.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, "-");
+
+    const wrap = document.createElement("div");
+    wrap.style.cssText = "position:fixed;left:-9999px;top:0;z-index:-1;width:560px;padding:30px;background:#f4f4f4;font-family:'Segoe UI',Arial,sans-serif;box-sizing:border-box;";
+    wrap.innerHTML = `
+      <div style="background:#fff;width:500px;border-radius:14px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,.14)">
+        <div style="background:#cc0000;color:#fff;padding:22px 28px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:800;letter-spacing:2px">KITOTECH × HIKVISION</div>
+            <div style="font-size:11px;opacity:.75;margin-top:3px;letter-spacing:.5px">Wakala Mkuu · Tanzania 2026</div>
+          </div>
+          <div style="font-size:30px;font-weight:900;letter-spacing:-2px;opacity:.9">HK</div>
+        </div>
+        <div style="padding:28px">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+            <div style="width:48px;height:48px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;flex-shrink:0">✓</div>
+            <div>
+              <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px">Uthibitisho wa Usajili</div>
+              <div style="font-size:17px;font-weight:700;color:#111;margin-top:3px">Umesajiliwa Kikamilifu</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #eee;margin:16px 0"></div>
+          <div style="margin-bottom:12px"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Jina Kamili</div><div style="font-size:15px;font-weight:600;color:#111">${record.full_name}</div></div>
+          <div style="margin-bottom:12px"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Namba ya Simu</div><div style="font-size:15px;font-weight:600;color:#111">${record.phone}</div></div>
+          <div style="margin-bottom:12px"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Mkoa wa Mafunzo</div><div style="font-size:15px;font-weight:600;color:#111">${city.name}</div></div>
+          <div style="margin-bottom:12px"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Tarehe za Mafunzo</div><div style="font-size:15px;font-weight:600;color:#111">${city.dateRange} · 2026</div></div>
+          <div style="margin-bottom:12px"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Venue / Mahali</div><div style="font-size:15px;font-weight:600;color:#111">${city.venue}</div></div>
+          <div style="border-top:1px solid #eee;margin:16px 0"></div>
+          <div style="background:#fff8f8;border:1.5px solid #fca5a5;border-radius:10px;padding:18px;text-align:center">
+            <div style="font-size:10px;color:#dc2626;text-transform:uppercase;letter-spacing:1.2px">Namba ya Usajili</div>
+            <div style="font-size:34px;font-weight:800;color:#cc0000;letter-spacing:4px;margin-top:6px">#${regId}</div>
+          </div>
+        </div>
+        <div style="background:#111;color:#666;text-align:center;padding:14px;font-size:11px">
+          <span style="color:#aaa;font-weight:700">Kitotech Group Ltd</span> · Wakala Mkuu wa Hikvision Tanzania · © 2026
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+
+    setTimeout(() => {
+      html2canvas(wrap.firstElementChild, { scale: 2, useCORS: true, backgroundColor: "#f4f4f4" }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = `Risiti-${safeName}-${regId}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        document.body.removeChild(wrap);
+      });
+    }, 120);
   };
 
   const RecordCard = () => {
@@ -235,11 +234,12 @@ hr{border:none;border-top:1px solid #eee;margin:18px 0}
         <div className="lkp-grid">
           <div className="lkp-cell"><div className="k">Mkoa</div><div className="v">{city.name}</div></div>
           <div className="lkp-cell"><div className="k">Tarehe</div><div className="v">{city.dateRange} · 2026</div></div>
+          <div className="lkp-cell lkp-cell-full"><div className="k">Venue</div><div className="v">📍 {city.venue}</div></div>
           <div className="lkp-cell"><div className="k">Simu</div><div className="v">{record.phone}</div></div>
           <div className="lkp-cell"><div className="k">Namba ya Usajili</div><div className="v lkp-ref">#{regId}</div></div>
         </div>
         <button className="modal-btn" onClick={openReceipt}>
-          ↓ &nbsp;Pakua / Chapisha Risiti
+          ↓ &nbsp;Pakua Risiti (PNG)
         </button>
       </div>
     );
@@ -452,6 +452,7 @@ function VisualPanel({ city, setCity, index, total, autoPlay }) {
             <div className="text">
               <div className="t1">{city.name}</div>
               <div className="t2">{city.region} · {city.dateRange}</div>
+              <div className="t3">📍 {city.venue}</div>
             </div>
           </div>
           <div className="arrows">
@@ -585,6 +586,7 @@ function SuccessPanel({ form, city, onReset }) {
             <div className="lt">Ratiba ya {city.name} · {city.region}</div>
             <div className="rt">{city.dateRange} · 2026</div>
           </div>
+          <div className="sched-venue">📍 {city.venue}</div>
           {rows.map((r) => (
             <div key={r.date} className={`sched-row ${r.type === "travel" ? "travel" : ""}`}>
               <div>
@@ -615,6 +617,7 @@ function SuccessPanel({ form, city, onReset }) {
         <div className="summary-grid">
           <div className="cell"><div className="k">Jina Kamili</div><div className="v">{form.fullName}</div></div>
           <div className="cell"><div className="k">Simu</div><div className="v">{form.phone}</div></div>
+          <div className="cell full"><div className="k">Venue</div><div className="v">{city.venue}</div></div>
         </div>
 
         <div className="success-next">
