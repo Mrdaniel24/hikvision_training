@@ -43,7 +43,7 @@ const CITIES = [
       size: "md"
     },
     waLink: "https://chat.whatsapp.com/DugTAm0ziGS7K79e9NSKKE?s=cl&p=a&mlu=2" },
-  { id: "karatu",  name: "Karatu",  region: "Arusha", dateRange: "08 — 10 Juni", initials: "KA",
+  { id: "karatu",  name: "Karatu",  region: "Arusha", dateRange: "15 — 16 Juni", initials: "KA",
     venue: "PEACE STATIONARY & GENERAL SUPPLIES",
     narrative: {
       heading: "Jaza fomu hapa chini.",
