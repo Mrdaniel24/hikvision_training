@@ -75,7 +75,7 @@ const SLIDES = [
 // Constants
 // ============================================================
 const MAX_SLOTS = 50;
-const CITY_MAX_SLOTS = { arusha: 100, moshi: 100 }; // per-city override
+const CITY_MAX_SLOTS = { arusha: 150, moshi: 100 }; // per-city override
 const getCityMax = (cityId) => CITY_MAX_SLOTS[cityId] ?? MAX_SLOTS;
 
 // ============================================================
