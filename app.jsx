@@ -29,6 +29,7 @@ const SCHEDULE = [
 const CITIES = [
   { id: "moshi",   name: "Moshi",   region: "Kilimanjaro",     dateRange: "08 — 10 Juni", initials: "MO",
     venue: "ELCT UMOJA HOSTEL",
+    closed: true,
     narrative: {
       heading: "Mafunzo ya Hikvision.",
       body: "Jisajili kwa kituo chako.",
@@ -529,9 +530,10 @@ function FormPanel({ form, setField, errors, onSubmit, submitting, fullCities, o
             <option value="">Chagua Mkoa</option>
             {CITIES.map((c) => {
               const full = fullCities && fullCities.has(c.id);
+              const tag = c.closed ? "Mafunzo Yamekamilika" : (full ? "Imejaa" : "");
               return (
                 <option key={c.id} value={c.id} disabled={full}>
-                  {c.name} · {c.dateRange}{full ? " · Imejaa" : ""}
+                  {c.name} · {c.dateRange}{tag ? ` · ${tag}` : ""}
                 </option>
               );
             })}
@@ -661,7 +663,7 @@ function App() {
 
   useEffect(() => {
     fetchCityCounts().then((counts) => {
-      const allFull = CITIES.every((c) => (counts[c.id] ?? 0) >= getCityMax(c.id));
+      const allFull = CITIES.every((c) => c.closed || (counts[c.id] ?? 0) >= getCityMax(c.id));
       if (allFull) setSlotsModal(null);
     });
   }, []);
@@ -748,7 +750,7 @@ function App() {
   };
 
   const fullCities = useMemo(
-    () => new Set(CITIES.filter((c) => (cityCounts[c.id] ?? 0) >= getCityMax(c.id)).map((c) => c.id)),
+    () => new Set(CITIES.filter((c) => c.closed || (cityCounts[c.id] ?? 0) >= getCityMax(c.id)).map((c) => c.id)),
     [cityCounts]
   );
 
